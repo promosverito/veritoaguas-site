@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="google-site-verification" content="0auqLqB1tkbF4xm-PThdxz1aCA4gjniIVTIp_9SLnGo" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="noindex,nofollow">
+<title>Verito Aguas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+  background: #0a0a0a;
+  color: #fff;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 0;
+}
+
+/* AGE GATE */
+#age-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  background: rgba(5, 5, 8, 0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  overflow-y: auto;
+}
+body.age-confirmed #age-gate { display: none; }
+#age-gate-inner {
+  max-width: 460px;
+  width: 100%;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(255, 105, 180, 0.08), rgba(255, 105, 180, 0.02));
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  border-radius: 1.5rem;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 20px 60px rgba(255, 105, 180, 0.15);
+}
+.gate-mark {
+  display: inline-block;
+  background: linear-gradient(135deg, #ff4d9d, #c238ff);
+  color: white;
+  padding: 0.3rem 0.9rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1rem;
+  margin-bottom: 1.2rem;
+  text-transform: uppercase;
+}
+#age-gate h1 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+#age-gate h1 span {
+  background: linear-gradient(135deg, #ff4d9d, #c238ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.gate-desc {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.55;
+  margin: 1rem 0 1.5rem;
+}
+.age-gate-buttons {
+  display: flex;
+  gap: 0.7rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.age-gate-buttons button {
+  flex: 1 1 140px;
+  padding: 0.85rem 1.4rem;
+  border: none;
+  border-radius: 100px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+#age-yes {
+  background: linear-gradient(135deg, #ff4d9d, #c238ff);
+  color: white;
+  box-shadow: 0 4px 20px rgba(255, 77, 157, 0.4);
+}
+#age-yes:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(255, 77, 157, 0.6); }
+#age-no {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+#age-no:hover { background: rgba(255, 255, 255, 0.15); }
+#age-gate-disclaimer {
+  margin-top: 1.5rem;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.5;
+}
+
+/* MAIN CARD */
+#card {
+  width: 100%;
+  max-width: 520px;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* HERO PHOTO — FIXED so it stays put while text scrolls over it (parallax) */
+#hero-photo {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 520px;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: #0a0a0a;
+  z-index: 0;
+}
+#hero-photo img,
+#hero-photo video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+/* Gradient fade at bottom of photo into dark bg */
+#hero-photo::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 55%;
+  background: linear-gradient(180deg,
+    rgba(10, 10, 10, 0) 0%,
+    rgba(10, 10, 10, 0.3) 35%,
+    rgba(10, 10, 10, 0.75) 70%,
+    rgba(10, 10, 10, 1) 100%);
+  pointer-events: none;
+}
+
+/* SPACER — reserves the image space so content starts below it, then scrolls over */
+#hero-spacer {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  aspect-ratio: 3 / 2;
+  flex: none;
+}
+
+/* CONTENT — sits on top of the fixed image and scrolls over it */
+#content {
+  position: relative;
+  z-index: 1;
+  margin-top: -4.5rem;
+  background: linear-gradient(180deg,
+    rgba(10, 10, 10, 0) 0%,
+    rgba(10, 10, 10, 0.85) 7%,
+    #0a0a0a 16%);
+}
+
+/* SCRIM — only used on PC; hidden on mobile */
+#scrim { display: none; }
+
+/* PROFILE INFO */
+#profile-info {
+  padding: 1.2rem 1.5rem 1.5rem;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+#profile-info h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+#profile-info h1 .heart {
+  display: inline-block;
+  font-size: 1.6rem;
+  filter: drop-shadow(0 0 8px rgba(255, 77, 157, 0.6));
+}
+#status-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0.6rem 0 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+}
+#status-row .dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+  margin-right: 0.4rem;
+  animation: pulse-dot 1.8s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+#status-row .sep {
+  opacity: 0.3;
+  font-weight: 400;
+}
+#status-row .location {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+#status-row .pin-icon {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  opacity: 0.85;
+}
+#tagline {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+  padding: 0 0.5rem;
+}
+
+/* CTA BUTTONS — single layer (no double emoji), color flip on hover, strong 3D heartbeat */
+#buttons {
+  padding: 1.5rem 1.5rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.cta-btn {
+  display: block;
+  background: #fff;
+  color: #0a0a0a;
+  text-decoration: none;
+  border-radius: 100px;
+  text-align: left;
+  font-weight: 700;
+  position: relative;
+  border: 2px solid transparent;
+  transition: transform 0.35s cubic-bezier(.455, .03, .515, .955),
+              background 0.35s ease,
+              color 0.35s ease,
+              border-color 0.35s ease,
+              box-shadow 0.35s ease;
+  /* Strong 3D heartbeat: slow single pulse + growing shadow */
+  animation: cta-heartbeat 2s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform, box-shadow;
+}
+
+/* Stagger so the two buttons pulse one after another */
+.cta-btn:nth-of-type(1) { animation-delay: 0s; }
+.cta-btn:nth-of-type(2) { animation-delay: 1s; }
+
+@keyframes cta-heartbeat {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+  }
+  50% {
+    transform: scale(1.07);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.6);
+  }
+}
+
+/* On hover: stop heartbeat, flip to black with white border, scale pop */
+.cta-btn:hover {
+  background: #0a0a0a;
+  color: #fff;
+  border-color: #fff;
+  animation: none;
+  transform: scale(1.05);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.65);
+}
+
+.cta-btn-inner {
+  padding: 1rem 1.5rem;
+}
+
+.cta-btn-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: inherit;
+}
+.cta-btn-subtitle {
+  font-size: 0.78rem;
+  opacity: 0.55;
+  margin-top: 0.15rem;
+  font-weight: 500;
+  color: inherit;
+}
+
+/* PROMO */
+#promo {
+  padding: 1.8rem 1.5rem 1rem;
+  text-align: center;
+}
+.promo-badge {
+  display: inline-block;
+  background: #2a2a2a;
+  color: white;
+  padding: 0.55rem 1.2rem;
+  border-radius: 100px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+.countdown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+.time-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 56px;
+}
+.time-block .num {
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1;
+}
+.time-block label {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: lowercase;
+  margin-top: 0.25rem;
+  letter-spacing: 0.05em;
+}
+.time-sep {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.6);
+  align-self: flex-start;
+  line-height: 1;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 2rem 1.5rem 2rem;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+footer a {
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  margin: 0 0.3rem;
+}
+footer a:hover { color: rgba(255, 255, 255, 0.8); }
+footer .footer-sep { opacity: 0.3; }
+
+/* MUSIC CONTROL */
+.music-control-btn {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1.5px solid rgba(255, 77, 157, 0.7);
+  box-shadow: 0 0 12px rgba(255, 77, 157, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.85);
+  transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  padding: 0;
+  outline: none;
+}
+body.age-confirmed .music-control-btn.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+}
+.music-control-btn:hover {
+  transform: scale(1.08);
+  background: rgba(255, 77, 157, 0.2);
+  box-shadow: 0 0 20px rgba(255, 77, 157, 0.8);
+}
+.music-control-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: white;
+  filter: drop-shadow(0 0 4px rgba(255, 77, 157, 0.6));
+  pointer-events: none;
+}
+.music-control-btn.pulsing {
+  animation: music-btn-pulse 1.4s ease-in-out 2;
+}
+@keyframes music-btn-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); box-shadow: 0 0 26px rgba(255, 77, 157, 0.95); }
+}
+
+/* RESPONSIVE */
+@media (min-width: 640px) {
+  body {
+    padding: 0;
+    background: #050505;
+    align-items: flex-start;
+  }
+  #card {
+    margin: 0 auto;
+    max-width: 520px;
+    box-shadow: 0 0 80px rgba(255, 77, 157, 0.08);
+  }
+  /* On PC the photo fills the WHOLE viewport as a fixed background */
+  #hero-photo {
+    left: 0;
+    transform: none;
+    width: 100vw;
+    max-width: none;
+    height: 100vh;
+    aspect-ratio: auto;
+  }
+  #hero-photo img {
+    object-position: center 22%;
+  }
+  /* Full-viewport vignette/scrim so text stays readable over the photo */
+  #hero-photo::after {
+    height: 100%;
+    background:
+      linear-gradient(180deg,
+        rgba(10, 10, 10, 0.35) 0%,
+        rgba(10, 10, 10, 0.05) 28%,
+        rgba(10, 10, 10, 0.55) 62%,
+        rgba(10, 10, 10, 0.95) 100%),
+      radial-gradient(ellipse 70% 80% at center 38%,
+        rgba(10, 10, 10, 0) 45%,
+        rgba(10, 10, 10, 0.6) 100%);
+  }
+  /* Spacer pushes content into the lower, readable part of the photo */
+  #hero-spacer {
+    max-width: none;
+    width: 100%;
+    aspect-ratio: auto;
+    height: 48vh;
+  }
+  #content {
+    margin-top: 0;
+    background: transparent;
+    position: relative;
+    min-height: 52vh;
+  }
+  /* All real content sits ABOVE the scrim */
+  #content > * {
+    position: relative;
+    z-index: 1;
+  }
+  /* SCRIM: dark backing that fades to transparent on the left/right edges,
+     so it blends into the photo instead of showing a hard column edge */
+  #scrim {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg,
+      rgba(10, 10, 10, 0) 0%,
+      rgba(10, 10, 10, 0.6) 9%,
+      rgba(10, 10, 10, 0.92) 26%,
+      #0a0a0a 50%);
+    -webkit-mask-image: linear-gradient(90deg,
+      transparent 0%, #000 17%, #000 83%, transparent 100%);
+    mask-image: linear-gradient(90deg,
+      transparent 0%, #000 17%, #000 83%, transparent 100%);
+  }
+}
+@media (max-width: 380px) {
+  #profile-info h1 { font-size: 1.7rem; }
+  .time-block .num { font-size: 1.4rem; }
+  .time-block { min-width: 48px; }
+  #tagline { font-size: 0.9rem; }
+}
+
+/* Respect users who prefer reduced motion — disable heartbeat */
+@media (prefers-reduced-motion: reduce) {
+  .cta-btn { animation: none !important; }
+  #status-row .dot { animation: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- AGE GATE -->
+<div id="age-gate">
+  <div id="age-gate-inner">
+    <div class="gate-mark">Adults Only — 18+</div>
+    <h1>aviso de contenido<br><span>para adultos</span></h1>
+    <p class="gate-desc">Este sitio contiene material destinado únicamente a personas mayores de 18 años (o la mayoría de edad legal en tu jurisdicción). Al ingresar confirmas que cumples con la edad legal y que solicitas voluntariamente este contenido.</p>
+    <div class="age-gate-buttons">
+      <button id="age-yes" type="button">Soy mayor de 18 — Entrar</button>
+      <button id="age-no" type="button">Salir</button>
+    </div>
+    <p id="age-gate-disclaimer">© veritoaguas — All Rights Reserved.<br>Si eres menor de edad, por favor abandona este sitio.</p>
+  </div>
+</div>
+
+<!-- MAIN CARD -->
+<main id="card">
+
+  <!-- HERO PHOTO (aspect 3:2 to fit landscape photos like 6149x4089)
+       TO USE A VIDEO INSTEAD: replace <img> with:
+       <video src="media/profile.mp4" autoplay loop muted playsinline></video>
+  -->
+  <div id="hero-photo">
+    <img src="media/profile.jpg" alt="Verito Aguas" id="hero-img">
+  </div>
+
+  <!-- SPACER: reserves the fixed image space; content below scrolls over it -->
+  <div id="hero-spacer"></div>
+
+  <!-- CONTENT: scrolls over the fixed hero image -->
+  <div id="content">
+
+  <!-- SCRIM: feathered dark backing (PC only) so the text area blends into the photo -->
+  <div id="scrim"></div>
+
+  <!-- PROFILE -->
+  <div id="profile-info">
+    <h1>verito <span class="heart">💗</span></h1>
+    <div id="status-row">
+      <span><span class="dot"></span>Activo ahora</span>
+      <span class="sep">·</span>
+      <span class="location">
+        <svg class="pin-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+        </svg>
+        México
+      </span>
+    </div>
+    <p id="tagline">Si no saben lo que quieren, les traigo yo un muestrario.&nbsp;❤️‍🔥</p>
+  </div>
+
+  <!-- CTA BUTTONS — single layer, color flip on hover -->
+  <div id="buttons">
+    <a href="https://onlyfans.com/veroaguasss" target="_blank" rel="noopener noreferrer" class="cta-btn">
+      <div class="cta-btn-inner">
+        <div class="cta-btn-title">OnlyFans 💗</div>
+        <div class="cta-btn-subtitle">Respondo en menos de 2 minutos</div>
+      </div>
+    </a>
+    <a href="https://t.me/VEROAGUASS4" target="_blank" rel="noopener noreferrer" class="cta-btn">
+      <div class="cta-btn-inner">
+        <div class="cta-btn-title">Tele 🍒</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- PROMO -->
+  <div id="promo">
+    <div class="promo-badge">80% OFF</div>
+    <div class="countdown">
+      <div class="time-block">
+        <span class="num" id="cd-hrs">00</span>
+        <label>hrs</label>
+      </div>
+      <span class="time-sep">:</span>
+      <div class="time-block">
+        <span class="num" id="cd-min">00</span>
+        <label>min</label>
+      </div>
+      <span class="time-sep">:</span>
+      <div class="time-block">
+        <span class="num" id="cd-sec">00</span>
+        <label>sec</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    © 2026 veritoaguas
+    <span class="footer-sep">—</span>
+    <a href="#">Términos y condiciones</a>
+    <span class="footer-sep">·</span>
+    <a href="#">Política de privacidad</a>
+  </footer>
+
+  </div><!-- /#content -->
+
+</main>
+
+<!-- MUSIC PLAYER -->
+<audio id="music-audio" loop preload="metadata" style="display:none"></audio>
+<button id="music-control" class="music-control-btn" type="button" aria-label="Música on/off" title="Música on/off">
+  <svg class="music-icon-muted" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.17v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+  </svg>
+  <svg class="music-icon-sound" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display:none">
+    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+  </svg>
+</button>
+
+<script>
+(function() {
+  try {
+
+    // AGE GATE
+    var ageYes = document.getElementById('age-yes');
+    var ageNo = document.getElementById('age-no');
+    if (ageYes) ageYes.addEventListener('click', function() {
+      document.body.classList.add('age-confirmed');
+    });
+    if (ageNo) ageNo.addEventListener('click', function() {
+      window.location.href = 'https://www.google.com';
+    });
+
+    // COUNTDOWN TIMER — 30 minutes, NO reinicia. Al llegar a 0 se oculta.
+    var COUNTDOWN_DURATION_MS = 30 * 60 * 1000;  // 30 minutes
+    var hrsEl = document.getElementById('cd-hrs');
+    var minEl = document.getElementById('cd-min');
+    var secEl = document.getElementById('cd-sec');
+    var promoEl = document.getElementById('promo');
+    var STORAGE_KEY = 'verito-countdown-end-v2';
+    var endTime = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10);
+    var now = Date.now();
+    // Solo crear el timer si no existe o si ya expiró en esta sesión de página
+    if (!endTime || endTime <= now) {
+      // Nuevo timer solo si es un refresh (nueva sesión de página)
+      endTime = now + COUNTDOWN_DURATION_MS;
+      try { localStorage.setItem(STORAGE_KEY, String(endTime)); } catch (e) {}
+    }
+    var countdownInterval = null;
+    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+    function tickCountdown() {
+      var diff = endTime - Date.now();
+      if (diff <= 0) {
+        // Llegó a 0: ocultar la sección entera y parar el timer
+        if (promoEl) promoEl.style.display = 'none';
+        if (countdownInterval) clearInterval(countdownInterval);
+        try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+        return;
+      }
+      var hrs = Math.floor(diff / (1000 * 60 * 60));
+      var min = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      var sec = Math.floor((diff % (1000 * 60)) / 1000);
+      if (hrsEl) hrsEl.textContent = pad(hrs);
+      if (minEl) minEl.textContent = pad(min);
+      if (secEl) secEl.textContent = pad(sec);
+    }
+    tickCountdown();
+    countdownInterval = setInterval(tickCountdown, 1000);
+
+    // ============================================================
+    // MUSIC PLAYER CONFIG — EDIT TO ENABLE
+    // ============================================================
+    //   MUSIC_MODE: 'none' (off) | 'file' (MP3 from media/)
+    //   To enable: set MUSIC_MODE = 'file' and upload music to media/
+    // ============================================================
+    var MUSIC_MODE = 'none';                  // ← change to 'file'
+    var MUSIC_FILE = 'media/music.mp3';       // ← path to MP3
+    var MUSIC_AUTOSTART_DELAY_MS = 10000;
+    var MUSIC_DEFAULT_VOLUME = 0.45;
+
+    (function setupMusicPlayer() {
+      if (MUSIC_MODE === 'none') return;
+      var btn = document.getElementById('music-control');
+      var audioEl = document.getElementById('music-audio');
+      if (!btn) return;
+      var iconMuted = btn.querySelector('.music-icon-muted');
+      var iconSound = btn.querySelector('.music-icon-sound');
+      var isMuted = true;
+      var hasStarted = false;
+
+      function updateIcon() {
+        if (isMuted) {
+          if (iconMuted) iconMuted.style.display = '';
+          if (iconSound) iconSound.style.display = 'none';
+        } else {
+          if (iconMuted) iconMuted.style.display = 'none';
+          if (iconSound) iconSound.style.display = '';
+        }
+      }
+      function applyMuteState() {
+        if (audioEl) {
+          audioEl.muted = isMuted;
+          if (!isMuted && audioEl.paused) audioEl.play().catch(function() {});
+        }
+        updateIcon();
+      }
+      function startMusic() {
+        if (hasStarted) return;
+        hasStarted = true;
+        if (audioEl) {
+          audioEl.src = MUSIC_FILE;
+          audioEl.loop = true;
+          audioEl.volume = MUSIC_DEFAULT_VOLUME;
+          audioEl.muted = false;
+          var p = audioEl.play();
+          if (p && p.catch) {
+            p.catch(function() {
+              var onClick = function() {
+                audioEl.play().catch(function(){});
+                document.removeEventListener('click', onClick);
+              };
+              document.addEventListener('click', onClick, {once: true});
+            });
+          }
+        }
+        isMuted = false;
+        updateIcon();
+        btn.classList.add('pulsing');
+        setTimeout(function() { btn.classList.remove('pulsing'); }, 3000);
+      }
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (!hasStarted) startMusic();
+        else { isMuted = !isMuted; applyMuteState(); }
+      });
+      function onAgeConfirmed() {
+        btn.classList.add('visible');
+        setTimeout(startMusic, MUSIC_AUTOSTART_DELAY_MS);
+      }
+      if (document.body.classList.contains('age-confirmed')) {
+        onAgeConfirmed();
+      } else {
+        var observer = new MutationObserver(function() {
+          if (document.body.classList.contains('age-confirmed')) {
+            observer.disconnect();
+            onAgeConfirmed();
+          }
+        });
+        observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+      }
+      updateIcon();
+    })();
+
+  } catch (e) { console.error('Site error:', e); }
+})();
+</script>
+
+</body>
+</html>
