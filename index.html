@@ -161,9 +161,9 @@ body.age-confirmed #age-gate { display: none; }
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(0deg,   #0a0a0a 0%, rgba(10, 10, 10, 0) 52%),   /* bottom (darker, text floats over it) */
-    linear-gradient(90deg,  #0a0a0a 0%, rgba(10, 10, 10, 0) 14%),   /* left */
-    linear-gradient(270deg, #0a0a0a 0%, rgba(10, 10, 10, 0) 14%);   /* right */
+    linear-gradient(0deg,   #0a0a0a 0%, rgba(10, 10, 10, 0.82) 14%, rgba(10, 10, 10, 0.35) 40%, rgba(10, 10, 10, 0) 68%),   /* bottom (soft, eased) */
+    linear-gradient(90deg,  #0a0a0a 0%, rgba(10, 10, 10, 0) 20%),   /* left (soft) */
+    linear-gradient(270deg, #0a0a0a 0%, rgba(10, 10, 10, 0) 20%);   /* right (soft) */
 }
 
 /* PROFILE INFO — floats OVER the lower part of the video (transparent), like the old image layout */
@@ -264,11 +264,13 @@ body.age-confirmed #age-gate { display: none; }
   color: #0a0a0a;
   text-decoration: none;
   border-radius: 100px;
+  border: 1px solid transparent;
   text-align: left;
   font-weight: 700;
   position: relative;
   overflow: hidden;
-  transition: background 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: background 0.4s cubic-bezier(0.32, 0.72, 0, 1),
+              border-color 0.35s ease;
   /* Soft pink halo so the white buttons pop off the black */
   box-shadow: 0 0 30px rgba(255, 77, 157, 0.12), 0 6px 20px rgba(0, 0, 0, 0.5);
   /* Single pulse per cycle, alternating between the two buttons */
@@ -289,30 +291,26 @@ body.age-confirmed #age-gate { display: none; }
 /* On hover: stop the pulse, change to black */
 .cta-btn:hover {
   background: #0a0a0a;
+  border-color: rgba(255, 255, 255, 0.9);
   animation-play-state: paused;
 }
 
 /* Inner wrapper that we translate up on hover */
 .cta-btn-stack {
   position: relative;
-  padding: 1rem 1.5rem;
   overflow: hidden;
-  height: auto;
 }
 .cta-btn-layer {
-  transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1),
-              color 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  padding: 1rem 1.5rem;
+  transition: transform 0.35s cubic-bezier(0.455, 0.03, 0.515, 0.955),
+              color 0.35s cubic-bezier(0.455, 0.03, 0.515, 0.955);
   display: block;
 }
-/* Default layer is visible, hover layer is BELOW (translated down) */
-.cta-btn-layer-default { color: #0a0a0a; }
+/* Default layer is in flow (it sets the height); hover layer fills it exactly and starts BELOW */
+.cta-btn-layer-default { color: #0a0a0a; position: relative; }
 .cta-btn-layer-hover {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 1rem 1.5rem;
+  inset: 0;
   color: #fff;
   transform: translateY(100%);
 }
