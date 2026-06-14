@@ -138,10 +138,9 @@ body.age-confirmed #age-gate { display: none; }
   min-height: 100vh;
 }
 
-/* HERO VIDEO — bigger now (4:3). Sticky so it stays put while text scrolls over it (parallax). */
+/* HERO VIDEO — full frame, NO side cropping. Sticky so it stays put while text scrolls over it (parallax). */
 #hero-photo {
   width: 100%;
-  aspect-ratio: 4 / 3;
   position: sticky;
   top: 0;
   z-index: 1;
@@ -151,12 +150,10 @@ body.age-confirmed #age-gate { display: none; }
 #hero-photo img,
 #hero-photo video {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
+  height: auto;          /* natural aspect ratio = the sides are never cropped */
   display: block;
 }
-/* Soft fade on ALL FOUR edges so the video melts into the black background (no hard rectangle line).
+/* Soft fade on the SIDES + BOTTOM so the video melts into the black background (no top fade).
    Bottom is stronger so the profile text can float over it and stay readable. */
 #hero-photo::after {
   content: "";
@@ -164,7 +161,6 @@ body.age-confirmed #age-gate { display: none; }
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(180deg, #0a0a0a 0%, rgba(10, 10, 10, 0) 22%),   /* top */
     linear-gradient(0deg,   #0a0a0a 0%, rgba(10, 10, 10, 0) 52%),   /* bottom (darker, text floats over it) */
     linear-gradient(90deg,  #0a0a0a 0%, rgba(10, 10, 10, 0) 14%),   /* left */
     linear-gradient(270deg, #0a0a0a 0%, rgba(10, 10, 10, 0) 14%);   /* right */
@@ -525,7 +521,9 @@ body.age-confirmed .music-control-btn.visible {
 
   <!-- HERO VIDEO (bigger, sticky — text scrolls over it). Aspect 4:3. -->
   <div id="hero-photo">
-    <video id="hero-video" autoplay loop muted playsinline preload="auto">
+    <video id="hero-video" width="1280" height="720" autoplay loop muted playsinline preload="auto">
+      <!-- Si subes una versión WebM (VP9/AV1) se ve más nítida y pesa menos; el navegador la usa si puede, si no, usa el mp4 -->
+      <source src="media/hero-video.webm" type="video/webm">
       <source src="media/hero-video.mp4" type="video/mp4">
     </video>
   </div>
