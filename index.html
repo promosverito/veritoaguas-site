@@ -131,32 +131,27 @@ body.age-confirmed #age-gate { display: none; }
 #card {
   width: 100%;
   max-width: 520px;
-  background: transparent;
+  background: #0a0a0a;
   display: flex;
   flex-direction: column;
   position: relative;
   min-height: 100vh;
 }
 
-/* HERO PHOTO — FIXED so it stays put while text scrolls over it (parallax) */
+/* HERO PHOTO — landscape 3:2 to fit user's 6149x4089 photo well */
 #hero-photo {
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
   width: 100%;
-  max-width: 520px;
   aspect-ratio: 3 / 2;
+  position: relative;
   overflow: hidden;
   background: #0a0a0a;
-  z-index: 0;
 }
 #hero-photo img,
 #hero-photo video {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position: center;
   display: block;
 }
 /* Gradient fade at bottom of photo into dark bg */
@@ -175,34 +170,13 @@ body.age-confirmed #age-gate { display: none; }
   pointer-events: none;
 }
 
-/* SPACER — reserves the image space so content starts below it, then scrolls over */
-#hero-spacer {
-  width: 100%;
-  max-width: 520px;
-  margin: 0 auto;
-  aspect-ratio: 3 / 2;
-  flex: none;
-}
-
-/* CONTENT — sits on top of the fixed image and scrolls over it */
-#content {
-  position: relative;
-  z-index: 1;
-  margin-top: -4.5rem;
-  background: linear-gradient(180deg,
-    rgba(10, 10, 10, 0) 0%,
-    rgba(10, 10, 10, 0.85) 7%,
-    #0a0a0a 16%);
-}
-
-/* SCRIM — only used on PC; hidden on mobile */
-#scrim { display: none; }
-
 /* PROFILE INFO */
 #profile-info {
   padding: 1.2rem 1.5rem 1.5rem;
   text-align: center;
+  background: #0a0a0a;
   position: relative;
+  margin-top: -3.5rem;
   z-index: 2;
 }
 #profile-info h1 {
@@ -253,27 +227,26 @@ body.age-confirmed #age-gate { display: none; }
   gap: 0.25rem;
 }
 #status-row .pin-icon {
-  width: 15px;
-  height: 15px;
-  fill: none;
-  stroke: currentColor;
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
   opacity: 0.85;
 }
 #tagline {
-  font-size: 0.85rem;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: white;
   margin-bottom: 0.5rem;
   line-height: 1.4;
   padding: 0 0.5rem;
 }
 
-/* CTA BUTTONS — single layer (no double emoji), color flip on hover, strong 3D heartbeat */
+/* CTA BUTTONS — with heartbeat + slide-up-to-black hover */
 #buttons {
   padding: 1.5rem 1.5rem 0.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
+  gap: 0.9rem;
 }
 
 .cta-btn {
@@ -285,45 +258,67 @@ body.age-confirmed #age-gate { display: none; }
   text-align: left;
   font-weight: 700;
   position: relative;
-  border: 2px solid transparent;
-  transition: transform 0.35s cubic-bezier(.455, .03, .515, .955),
-              background 0.35s ease,
-              color 0.35s ease,
-              border-color 0.35s ease,
-              box-shadow 0.35s ease;
-  /* Strong 3D heartbeat: slow single pulse + growing shadow */
-  animation: cta-heartbeat 1.5s ease-in-out infinite;
+  overflow: hidden;
+  transition: background 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  /* Heartbeat animation - subtle pulse */
+  animation: cta-heartbeat 1.6s ease-in-out infinite;
   transform-origin: center;
-  will-change: transform, box-shadow;
+  will-change: transform;
 }
 
-/* Stagger so the two buttons pulse one after another */
-.cta-btn:nth-of-type(1) { animation-delay: 0s; }
-.cta-btn:nth-of-type(2) { animation-delay: 0.75s; }
+/* Stagger the heartbeat so the two buttons beat one after the other */
+.cta-btn:nth-of-type(1) {
+  animation-delay: 0s;
+}
+.cta-btn:nth-of-type(2) {
+  animation-delay: 0.8s;
+}
 
 @keyframes cta-heartbeat {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
-  }
-  50% {
-    transform: scale(1.07);
-    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.6);
-  }
+  0%, 100% { transform: scale(1); }
+  12%      { transform: scale(1.035); }
+  25%      { transform: scale(0.995); }
+  35%      { transform: scale(1.022); }
+  50%      { transform: scale(1); }
 }
 
-/* On hover: stop heartbeat, flip to black with white border, scale pop */
+/* On hover: stop the heartbeat, change to black */
 .cta-btn:hover {
   background: #0a0a0a;
-  color: #fff;
-  border-color: #fff;
-  animation: none;
-  transform: scale(1.05);
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.65);
+  animation-play-state: paused;
 }
 
-.cta-btn-inner {
+/* Inner wrapper that we'll translate up on hover */
+.cta-btn-stack {
+  position: relative;
   padding: 1rem 1.5rem;
+  overflow: hidden;
+  height: auto;
+}
+.cta-btn-layer {
+  transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1),
+              color 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+  display: block;
+}
+/* Default layer is visible, hover layer is BELOW (translated down) */
+.cta-btn-layer-default { color: #0a0a0a; }
+.cta-btn-layer-hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1rem 1.5rem;
+  color: #fff;
+  transform: translateY(100%);
+}
+
+/* On hover: slide both layers UP */
+.cta-btn:hover .cta-btn-layer-default {
+  transform: translateY(-100%);
+}
+.cta-btn:hover .cta-btn-layer-hover {
+  transform: translateY(0%);
 }
 
 .cta-btn-title {
@@ -332,14 +327,16 @@ body.age-confirmed #age-gate { display: none; }
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  color: inherit;
 }
 .cta-btn-subtitle {
   font-size: 0.78rem;
-  opacity: 0.55;
+  opacity: 0.6;
   margin-top: 0.15rem;
   font-weight: 500;
-  color: inherit;
+}
+/* When in dark (hover) state, subtitle slightly different */
+.cta-btn-layer-hover .cta-btn-subtitle {
+  opacity: 0.7;
 }
 
 /* PROMO */
@@ -463,72 +460,11 @@ body.age-confirmed .music-control-btn.visible {
   body {
     padding: 0;
     background: #050505;
-    align-items: flex-start;
   }
   #card {
-    margin: 0 auto;
-    max-width: 520px;
+    margin: 0;
     box-shadow: 0 0 80px rgba(255, 77, 157, 0.08);
   }
-  /* On PC: show the FULL image, fit to height, centered; sides feather into black */
-  #hero-photo {
-    left: 0;
-    transform: none;
-    width: 100vw;
-    max-width: none;
-    height: 100vh;
-    aspect-ratio: auto;
-    background: #0a0a0a;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-  }
-  #hero-photo img {
-    width: auto;
-    height: 112vh;
-    max-width: none;
-    object-fit: fill;
-    object-position: center;
-    /* Feather the REAL left/right edges of the image into the dark background.
-       Because the <img> box equals the image itself here, the fade always lands
-       exactly on the photo edge regardless of monitor width — no visible lines.
-       Wider, softer fade so the transition into black is smooth. */
-    -webkit-mask-image: linear-gradient(90deg,
-      transparent 0%, rgba(0,0,0,0.4) 6%, #000 18%, #000 82%, rgba(0,0,0,0.4) 94%, transparent 100%);
-    mask-image: linear-gradient(90deg,
-      transparent 0%, rgba(0,0,0,0.4) 6%, #000 18%, #000 82%, rgba(0,0,0,0.4) 94%, transparent 100%);
-  }
-  /* Full-width darkening at the bottom so the text always reads */
-  #hero-photo::after {
-    height: 100%;
-    background: linear-gradient(180deg,
-      rgba(10, 10, 10, 0) 0%,
-      rgba(10, 10, 10, 0) 42%,
-      rgba(10, 10, 10, 0.5) 64%,
-      rgba(10, 10, 10, 0.88) 83%,
-      #0a0a0a 100%);
-  }
-  /* Spacer pushes content into the lower, full-width dark zone */
-  #hero-spacer {
-    max-width: none;
-    width: 100%;
-    aspect-ratio: auto;
-    height: 56vh;
-  }
-  #content {
-    margin-top: 0;
-    background: transparent;
-    position: relative;
-    min-height: 44vh;
-  }
-  /* Content text sits above everything */
-  #content > * {
-    position: relative;
-    z-index: 1;
-  }
-  /* Scrim not needed on PC — the image mask + bottom gradient handle it */
-  #scrim { display: none; }
 }
 @media (max-width: 380px) {
   #profile-info h1 { font-size: 1.7rem; }
@@ -568,17 +504,10 @@ body.age-confirmed .music-control-btn.visible {
        <video src="media/profile.mp4" autoplay loop muted playsinline></video>
   -->
   <div id="hero-photo">
-    <img src="media/profile.jpg" alt="Verito Aguas" id="hero-img">
+    <video id="hero-video" autoplay loop muted playsinline preload="auto">
+      <source src="media/hero-video.mp4" type="video/mp4">
+    </video>
   </div>
-
-  <!-- SPACER: reserves the fixed image space; content below scrolls over it -->
-  <div id="hero-spacer"></div>
-
-  <!-- CONTENT: scrolls over the fixed hero image -->
-  <div id="content">
-
-  <!-- SCRIM: feathered dark backing (PC only) so the text area blends into the photo -->
-  <div id="scrim"></div>
 
   <!-- PROFILE -->
   <div id="profile-info">
@@ -587,9 +516,8 @@ body.age-confirmed .music-control-btn.visible {
       <span><span class="dot"></span>Activo ahora</span>
       <span class="sep">·</span>
       <span class="location">
-        <svg class="pin-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <svg class="pin-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
         </svg>
         México
       </span>
@@ -597,17 +525,28 @@ body.age-confirmed .music-control-btn.visible {
     <p id="tagline">Si no saben lo que quieren, les traigo yo un muestrario.&nbsp;❤️‍🔥</p>
   </div>
 
-  <!-- CTA BUTTONS — single layer, color flip on hover -->
+  <!-- CTA BUTTONS — heartbeat + slide-up-to-black hover -->
   <div id="buttons">
     <a href="https://onlyfans.com/veroaguasss" target="_blank" rel="noopener noreferrer" class="cta-btn">
-      <div class="cta-btn-inner">
-        <div class="cta-btn-title">OnlyFans 💗</div>
-        <div class="cta-btn-subtitle">Respondo en menos de 2 minutos</div>
+      <div class="cta-btn-stack">
+        <div class="cta-btn-layer cta-btn-layer-default">
+          <div class="cta-btn-title">OnlyFans <span style="font-size:1.1em">💗</span></div>
+          <div class="cta-btn-subtitle">Respondo en menos de 2 minutos</div>
+        </div>
+        <div class="cta-btn-layer cta-btn-layer-hover">
+          <div class="cta-btn-title">OnlyFans <span style="font-size:1.1em">💗</span></div>
+          <div class="cta-btn-subtitle">Respondo en menos de 2 minutos</div>
+        </div>
       </div>
     </a>
     <a href="https://t.me/VEROAGUASS4" target="_blank" rel="noopener noreferrer" class="cta-btn">
-      <div class="cta-btn-inner">
-        <div class="cta-btn-title">Tele 🍒</div>
+      <div class="cta-btn-stack">
+        <div class="cta-btn-layer cta-btn-layer-default">
+          <div class="cta-btn-title">Tele <span style="font-size:1.1em">🍒</span></div>
+        </div>
+        <div class="cta-btn-layer cta-btn-layer-hover">
+          <div class="cta-btn-title">Tele <span style="font-size:1.1em">🍒</span></div>
+        </div>
       </div>
     </a>
   </div>
@@ -642,8 +581,6 @@ body.age-confirmed .music-control-btn.visible {
     <a href="#">Política de privacidad</a>
   </footer>
 
-  </div><!-- /#content -->
-
 </main>
 
 <!-- MUSIC PLAYER -->
@@ -671,31 +608,25 @@ body.age-confirmed .music-control-btn.visible {
       window.location.href = 'https://www.google.com';
     });
 
-    // COUNTDOWN TIMER — 30 minutes, NO reinicia. Al llegar a 0 se oculta.
+    // COUNTDOWN TIMER — 30 minutes, repeats automatically
     var COUNTDOWN_DURATION_MS = 30 * 60 * 1000;  // 30 minutes
     var hrsEl = document.getElementById('cd-hrs');
     var minEl = document.getElementById('cd-min');
     var secEl = document.getElementById('cd-sec');
-    var promoEl = document.getElementById('promo');
     var STORAGE_KEY = 'verito-countdown-end-v2';
     var endTime = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10);
     var now = Date.now();
-    // Solo crear el timer si no existe o si ya expiró en esta sesión de página
     if (!endTime || endTime <= now) {
-      // Nuevo timer solo si es un refresh (nueva sesión de página)
       endTime = now + COUNTDOWN_DURATION_MS;
       try { localStorage.setItem(STORAGE_KEY, String(endTime)); } catch (e) {}
     }
-    var countdownInterval = null;
     function pad(n) { return n < 10 ? '0' + n : '' + n; }
     function tickCountdown() {
       var diff = endTime - Date.now();
       if (diff <= 0) {
-        // Llegó a 0: ocultar la sección entera y parar el timer
-        if (promoEl) promoEl.style.display = 'none';
-        if (countdownInterval) clearInterval(countdownInterval);
-        try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
-        return;
+        endTime = Date.now() + COUNTDOWN_DURATION_MS;
+        try { localStorage.setItem(STORAGE_KEY, String(endTime)); } catch (e) {}
+        diff = endTime - Date.now();
       }
       var hrs = Math.floor(diff / (1000 * 60 * 60));
       var min = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
@@ -705,7 +636,7 @@ body.age-confirmed .music-control-btn.visible {
       if (secEl) secEl.textContent = pad(sec);
     }
     tickCountdown();
-    countdownInterval = setInterval(tickCountdown, 1000);
+    setInterval(tickCountdown, 1000);
 
     // ============================================================
     // MUSIC PLAYER CONFIG — EDIT TO ENABLE
@@ -713,7 +644,7 @@ body.age-confirmed .music-control-btn.visible {
     //   MUSIC_MODE: 'none' (off) | 'file' (MP3 from media/)
     //   To enable: set MUSIC_MODE = 'file' and upload music to media/
     // ============================================================
-    var MUSIC_MODE = 'none';                  // ← change to 'file'
+    var MUSIC_MODE = 'video';                  // ← change to 'file'
     var MUSIC_FILE = 'media/music.mp3';       // ← path to MP3
     var MUSIC_AUTOSTART_DELAY_MS = 10000;
     var MUSIC_DEFAULT_VOLUME = 0.45;
@@ -722,11 +653,19 @@ body.age-confirmed .music-control-btn.visible {
       if (MUSIC_MODE === 'none') return;
       var btn = document.getElementById('music-control');
       var audioEl = document.getElementById('music-audio');
+      var heroVideo = document.getElementById('hero-video');
       if (!btn) return;
       var iconMuted = btn.querySelector('.music-icon-muted');
       var iconSound = btn.querySelector('.music-icon-sound');
       var isMuted = true;
       var hasStarted = false;
+
+      // Get the active audio source based on mode
+      function getActiveSource() {
+        if (MUSIC_MODE === 'video') return heroVideo;
+        if (MUSIC_MODE === 'file') return audioEl;
+        return null;
+      }
 
       function updateIcon() {
         if (isMuted) {
@@ -738,16 +677,25 @@ body.age-confirmed .music-control-btn.visible {
         }
       }
       function applyMuteState() {
-        if (audioEl) {
-          audioEl.muted = isMuted;
-          if (!isMuted && audioEl.paused) audioEl.play().catch(function() {});
+        var src = getActiveSource();
+        if (src) {
+          src.muted = isMuted;
+          if (!isMuted && src.paused) src.play().catch(function() {});
         }
         updateIcon();
       }
       function startMusic() {
         if (hasStarted) return;
         hasStarted = true;
-        if (audioEl) {
+        var src = getActiveSource();
+        if (!src) return;
+        if (MUSIC_MODE === 'video') {
+          // Unmute the hero video so its audio plays
+          heroVideo.muted = false;
+          heroVideo.volume = MUSIC_DEFAULT_VOLUME;
+          // Ensure it's playing
+          if (heroVideo.paused) heroVideo.play().catch(function() {});
+        } else if (MUSIC_MODE === 'file') {
           audioEl.src = MUSIC_FILE;
           audioEl.loop = true;
           audioEl.volume = MUSIC_DEFAULT_VOLUME;
