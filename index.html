@@ -161,9 +161,9 @@ body.age-confirmed #age-gate { display: none; }
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(0deg,   #0a0a0a 0%, rgba(10, 10, 10, 0.82) 14%, rgba(10, 10, 10, 0.35) 40%, rgba(10, 10, 10, 0) 68%),   /* bottom (soft, eased) */
-    linear-gradient(90deg,  #0a0a0a 0%, rgba(10, 10, 10, 0) 20%),   /* left (soft) */
-    linear-gradient(270deg, #0a0a0a 0%, rgba(10, 10, 10, 0) 20%);   /* right (soft) */
+    linear-gradient(0deg,   #0a0a0a 0%, rgba(10, 10, 10, 0.85) 12%, rgba(10, 10, 10, 0.4) 32%, rgba(10, 10, 10, 0) 54%),   /* bottom (shorter, still hides the line) */
+    linear-gradient(90deg,  #0a0a0a 0%, rgba(10, 10, 10, 0) 20%),   /* left */
+    linear-gradient(270deg, #0a0a0a 0%, rgba(10, 10, 10, 0) 20%);   /* right */
 }
 
 /* PROFILE INFO — floats OVER the lower part of the video (transparent), like the old image layout */
@@ -341,10 +341,134 @@ body.age-confirmed #age-gate { display: none; }
   opacity: 0.7;
 }
 
+/* YOUTUBE — temporary pink button with a real liquid "melting" (gooey) effect */
+.yt-btn {
+  display: block;
+  position: relative;
+  height: 3.4rem;
+  margin-top: 0.2rem;
+  border-radius: 100px;
+  text-decoration: none;
+  text-align: center;
+  overflow: visible;                 /* drips fall below the pill */
+  box-shadow: 0 8px 30px rgba(255, 77, 157, 0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: yt-glow 3s ease-in-out infinite;
+}
+.yt-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 42px rgba(255, 77, 157, 0.55);
+}
+
+/* The liquid layer: pill body + drip blobs, all fused by the SVG goo filter */
+.yt-goo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 12rem;                     /* headroom for the long falling drips */
+  z-index: 1;
+  pointer-events: none;
+  filter: url(#yt-goo);
+}
+.yt-body {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3.4rem;
+  border-radius: 100px;
+  background: linear-gradient(120deg, #ff4d9d, #ff2f8e, #c238ff, #ff2f8e, #ff4d9d);
+  background-size: 320% 320%;
+  animation: yt-liquid 6s ease-in-out infinite;
+}
+.yt-drop {
+  position: absolute;
+  top: 2.5rem;                       /* starts overlapping the body's bottom edge */
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ff2f8e;
+  transform-origin: top center;      /* se estira hacia abajo desde el cuerpo, como helado */
+  animation: yt-melt-drop 6.5s ease-in-out infinite;
+}
+.yt-drop.d1 { left: 22%; width: 20px; height: 20px; animation-delay: 0s;   animation-duration: 6.5s; }
+.yt-drop.d2 { left: 44%; width: 15px; height: 15px; animation-delay: 2.3s; animation-duration: 7.2s; }
+.yt-drop.d3 { left: 66%; width: 22px; height: 22px; animation-delay: 4.1s; animation-duration: 6s;   }
+.yt-drop.d4 { left: 84%; width: 16px; height: 16px; animation-delay: 1.2s; animation-duration: 7.6s; }
+
+/* The text/icon layer — NOT filtered, so it stays crisp on top of the liquid */
+.yt-inner {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0 1.2rem;
+}
+.yt-icon {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+/* rotating text area — fixed height so the button never jumps between phrases */
+.yt-rotator {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.yt-phrase {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.28);
+  opacity: 0;
+  transform: translateY(9px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.yt-phrase.is-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* flowing liquid gradient (the "water") */
+@keyframes yt-liquid {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+/* the melt: forms a bulge, sags into a long connected tongue, then a droplet
+   peels off SLOWLY and oozes down — like melting ice cream, not falling rain */
+@keyframes yt-melt-drop {
+  0%   { transform: translateY(0)    scaleY(0.5) scaleX(1);    opacity: 0; }
+  12%  { transform: translateY(0)    scaleY(1)   scaleX(1);    opacity: 1; }
+  45%  { transform: translateY(4px)  scaleY(2.6) scaleX(0.85); opacity: 1; }
+  70%  { transform: translateY(34px) scaleY(1.7) scaleX(0.72); opacity: 0.95; }
+  100% { transform: translateY(80px) scaleY(0.9) scaleX(0.5);  opacity: 0; }
+}
+/* gentle glow pulse */
+@keyframes yt-glow {
+  0%, 100% { box-shadow: 0 8px 28px rgba(255, 77, 157, 0.35); }
+  50%      { box-shadow: 0 10px 40px rgba(255, 77, 157, 0.6); }
+}
+
 /* PROMO */
 #promo {
   padding: 1.8rem 1.5rem 1rem;
   text-align: center;
+  position: relative;
+  z-index: 3;            /* el texto de la promo queda por ENCIMA de las gotas que caen */
 }
 .promo-badge {
   display: inline-block;
@@ -495,6 +619,17 @@ body.age-confirmed .music-control-btn.visible {
 @media (prefers-reduced-motion: reduce) {
   .cta-btn { animation: none !important; }
   #status-row .dot { animation: none !important; }
+  .yt-btn, .yt-body { animation: none !important; }
+  .yt-drop { display: none !important; }
+  .yt-phrase { transition: none !important; }
+}
+
+/* PHONE — drop the side fades, keep only the bottom one */
+@media (max-width: 639px) {
+  #hero-photo::after {
+    background:
+      linear-gradient(0deg, #0a0a0a 0%, rgba(10, 10, 10, 0.85) 12%, rgba(10, 10, 10, 0.4) 32%, rgba(10, 10, 10, 0) 54%);
+  }
 }
 </style>
 </head>
@@ -570,6 +705,26 @@ body.age-confirmed .music-control-btn.visible {
           </div>
         </div>
       </a>
+
+      <!-- YOUTUBE — botón temporal. Se borra solo en 1 semana (ver YT_BTN_EXPIRY en el JS). -->
+      <a id="yt-button" href="https://www.youtube.com/@veritoaguas" target="_blank" rel="noopener noreferrer" class="yt-btn" style="display:none">
+        <span class="yt-goo" aria-hidden="true">
+          <span class="yt-body"></span>
+          <i class="yt-drop d1"></i>
+          <i class="yt-drop d2"></i>
+          <i class="yt-drop d3"></i>
+          <i class="yt-drop d4"></i>
+        </span>
+        <span class="yt-inner">
+          <svg class="yt-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" fill="#fff">
+            <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.2 3.6-6.2 3.6z"/>
+          </svg>
+          <span class="yt-rotator">
+            <span class="yt-phrase is-active">Ven a ver el estreno de mi video</span>
+            <span class="yt-phrase">▶ Nuevo video en mi YouTube</span>
+          </span>
+        </span>
+      </a>
     </div>
 
     <!-- PROMO -->
@@ -606,6 +761,16 @@ body.age-confirmed .music-control-btn.visible {
   <!-- /#content-below -->
 
 </main>
+
+<!-- SVG goo filter for the YouTube melting button -->
+<svg width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="yt-goo">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9"/>
+    </filter>
+  </defs>
+</svg>
 
 <!-- MUSIC PLAYER -->
 <audio id="music-audio" loop preload="metadata" style="display:none"></audio>
@@ -677,6 +842,28 @@ body.age-confirmed .music-control-btn.visible {
     }
     tickCountdown();
     setInterval(tickCountdown, 1000);
+
+    // YOUTUBE PROMO BUTTON — se borra solo en 1 semana.
+    // Para cambiar el plazo, edita la fecha de abajo (formato AAAA-MM-DD).
+    var YT_BTN_EXPIRY = new Date('2026-06-21T23:59:59').getTime();
+    var ytBtn = document.getElementById('yt-button');
+    if (ytBtn) {
+      if (Date.now() < YT_BTN_EXPIRY) {
+        ytBtn.style.display = '';              // visible mientras no expire
+        // texto rotativo
+        var ytPhrases = ytBtn.querySelectorAll('.yt-phrase');
+        if (ytPhrases.length > 1) {
+          var ytIdx = 0;
+          setInterval(function() {
+            ytPhrases[ytIdx].classList.remove('is-active');
+            ytIdx = (ytIdx + 1) % ytPhrases.length;
+            ytPhrases[ytIdx].classList.add('is-active');
+          }, 3200);
+        }
+      } else if (ytBtn.parentNode) {
+        ytBtn.parentNode.removeChild(ytBtn);   // se elimina solo al expirar
+      }
+    }
 
     // ============================================================
     // MUSIC PLAYER CONFIG — EDIT TO ENABLE
